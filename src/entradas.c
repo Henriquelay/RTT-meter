@@ -18,13 +18,14 @@ void leMonitores(FILE* file,int* M, int m){
   } 
 }
 
-void leArestas(FILE* file,aresta* arestas, int e){
+void leVertices(FILE* file,Item** A, int e, int*map, int* tamanho){
   for(int i=0;i<e;i++){
     int a,b;
     double w;
     fscanf(file,"%i %i %lf",&a,&b,&w);
-    arestas[i].idA=a;
-    arestas[i].idB=b;
-    arestas[i].weight=w;
+    PQ_insert(A[a],b,w,map,tamanho);
+    // arestas[i].idA=a;
+    // arestas[i].idB=b;
+    // arestas[i].weight=w;
   } 
 }
