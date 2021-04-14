@@ -1,4 +1,10 @@
-#include "PQ.h"
+#include "../lib/PQ.h"
+
+void exch(Item_Vertex** a, Item_Vertex** b) {
+    Item_Vertex* T = *a;
+    *a = *b;
+    *b = T;
+}
 
 Item_Vertex make_item(unsigned int id) {
     Item_Vertex t;
@@ -7,19 +13,19 @@ Item_Vertex make_item(unsigned int id) {
     unsigned int i;
     for (i = 0; i < EDGESIZE; i++) {
         t.to[i] = UINT_MAX;
-        t.weight[i] = UINT_MAX;
+        t.weight[i] = __DBL_MAX__;
     }
-    t.dist = UINT_MAX;
+    t.dist = __DBL_MAX__;
     return t;
 }
 
 void print_item(Item_Vertex* item) {
     if (!item) { printf("NULL\n"); return; }
-    printf("[Vertex %u] dist = (%u)\n", id(item), value(item));
+    printf("[Vertex %u] dist = (%f)\n", id(item), value(item));
     unsigned int i;
     for (i = 0; i < item->size; i++) {
         printf("%u--", id(item));
-        printf("%u", item->weight[i]);
+        printf("%f", item->weight[i]);
         printf("->%u\n", to(item)[i]);
     }
 }
@@ -46,7 +52,7 @@ void fix_up(PQ* pq, unsigned int k) {
 void fix_down(PQ* pq, unsigned int parent) {
     while (2 * parent <= pq->size) {
         unsigned int child = 2 * parent;
-        /* child < pq->size checks if there's a position after child, since PQ starts at 1; */
+        // child < pq->size checks if there's a position after child, since PQ starts at 1;
         if (child < pq->size && more(pq->vertex[child], pq->vertex[child + 1])) {
             child++;
         }
@@ -73,7 +79,7 @@ void PQ_print(PQ* pq) {
         return;
     }
     printf("PQ=%p map=%p size=%u\n", (void*)pq->vertex, (void*)pq->map, pq->size);
-    /* This implementation skips index 0 */
+    // This implementation skips index 0
     unsigned int i;
     for (i = 0; i <= pq->size; i++) {
         printf("[%u] ", i);
@@ -103,7 +109,7 @@ Item_Vertex* PQ_delmin(PQ* pq) {
 void PQ_decrease_key(PQ* pq, unsigned int id, unsigned int value) {
     unsigned int i = pq->map[id];
     value(pq->vertex[i]) = value;
-    /* printf("Novo valor %u\n", value(pq->vertex[i])); */
+    // printf("Novo valor %u\n", value(pq->vertex[i]));
     fix_up(pq, i);
 }
 
@@ -131,7 +137,7 @@ unsigned int PQ_size(PQ* pq) {
     return pq->size;
 }
 
-/* Frees the Items inside too */
+// Frees the Items inside too
 void PQ_finish(PQ* pq) {
     if (pq == NULL) return;
     unsigned int i;
