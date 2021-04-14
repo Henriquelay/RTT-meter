@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "list.h"
 
 typedef struct struct_edge_t {
@@ -16,6 +17,7 @@ typedef struct struct_Item_Vertex {
     unsigned int id;
     unsigned int size;
     double dist;
+    char type;
     list_t *edgeList;
 } vertex_t;
 
@@ -25,9 +27,9 @@ typedef struct struct_PQ {
     unsigned int* map;
 } PQ;
 
-#define id(A)           (A->id)                         // retorna identificador do nó */
-#define value(A)        (A->dist)                       // retorna valor do nó */
-#define to(A)           (A->to)                         // retorna id do nó destino */
+#define id(A)           (A->id)                         // retorna identificador do nó
+#define value(A)        (A->dist)                       // retorna distância do nó
+#define to(A)           (A->to)                         // retorna id do nó destino
 #define more(A, B)      (value(A) > value(B))           // compara nós, por valor */
 
 edge_t* init_edge(unsigned int to, double weight);

@@ -26,7 +26,7 @@ void* list_pop(list_t* list);
 void list_enqueue(list_t* list, void* item);
 void* list_dequeue(list_t* list);
 
-void list_runOnAll(list_t* list, void (*visit)(linked_node_t));
+void list_runOnAll(list_t* list, void (*visit)(void*));
 
 void list_print(list_t* stack, const char* format);
 

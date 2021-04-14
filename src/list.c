@@ -88,9 +88,9 @@ void list_print(list_t* list, const char* format) {
     puts("");
 }
 
-void list_runOnAll(list_t* list, void (*visit)(linked_node_t)) {
+void list_runOnAll(list_t* list, void (*visit)(void*)) {
     for (linked_node_t* current = list->head; current != NULL; current = current->next) {
-        visits(current->value);
+        visit(current->value);
     }
     puts("");
 }

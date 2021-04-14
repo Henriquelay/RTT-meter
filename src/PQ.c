@@ -17,14 +17,18 @@ edge_t* init_edge(unsigned int to, double weight) {
     return edge;
 }
 
-void print_vertex_callback(edge_t* edge) {
-    printf("\t-(%f)->%u", edge->weight, edge->idTo);
+void print_vertex_callback(void* edge) {
+    printf("\t-(%f)->%u\n", ((edge_t*) edge)->weight, ((edge_t*) edge)->idTo);
 }
 
 void print_vertex(vertex_t* vertex) {
     if (!vertex) { printf("NULL\n"); return; }
     printf("[Vertex %u] dist = (%f)\n", id(vertex), value(vertex));
-    list_runOnAll(vertex->edgeList, print_vertex_callback);
+    if (!vertex->edgeList) {
+        printf("\tNo edges.\n");
+    } else {
+        list_runOnAll(vertex->edgeList, print_vertex_callback);
+    }
 }
 
 vertex_t* init_vertex(unsigned int id) {
@@ -32,7 +36,7 @@ vertex_t* init_vertex(unsigned int id) {
     newItem->id = id;
     newItem->size = 0;
     newItem->edgeList = NULL;
-    newItem->dist = __DBL_MAX__;
+    newItem->dist = INFINITY;
     return newItem;
 }
 
