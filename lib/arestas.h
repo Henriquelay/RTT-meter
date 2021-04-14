@@ -1,16 +1,16 @@
-#ifndef VERTICES_H_
-#define VERTICES_H_
+#ifndef ARESTAS_H_
+#define ARESTAS_H_
 
 
 #include<stdlib.h>
 #include<stdio.h>
 
-typedef struct vertice {
+typedef struct aresta {
   unsigned int idA;  
   unsigned int idB;                // identificador do nó
   double weight;     // valor associado ao nó;
-}vertice;
+}aresta;
 
-vertice* criaArestasVazias(int e);
+aresta* criaArestasVazias(int e);
 
-#endif // !VERTICES_H_
+#endif // !ARESTAS_H_

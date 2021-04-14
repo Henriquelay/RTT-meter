@@ -4,11 +4,11 @@
 #include <stdbool.h>
 #include "item.h"
 
-// typedef struct PQ {
-//   Item *pq;
-//   int *map;
-//   int N;
-// }PQ;
+typedef struct PQ {
+  Item *pq;
+  int *map;
+  int N;
+}PQ;
 
 
 Item* PQ_init(int maxN); // cria uma min PQ com capacidade maxN
