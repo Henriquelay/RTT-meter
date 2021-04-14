@@ -88,6 +88,13 @@ void list_print(list_t* list, const char* format) {
     puts("");
 }
 
+void list_runOnAll(list_t* list, void (*visit)(linked_node_t)) {
+    for (linked_node_t* current = list->head; current != NULL; current = current->next) {
+        visits(current->value);
+    }
+    puts("");
+}
+
 void pointerThingy(linked_node_t* node) {
     if (node != NULL) {
         if (node->next != NULL) {

@@ -1,38 +1,38 @@
 #include "../lib/PQ.h"
 
-void exch(Item_Vertex** a, Item_Vertex** b) {
-    Item_Vertex* T = *a;
+void exch(vertex_t** a, vertex_t** b) {
+    vertex_t* T = *a;
     *a = *b;
     *b = T;
 }
 
-Item_Vertex make_item(unsigned int id) {
-    Item_Vertex t;
-    t.id = id;
-    t.size = 0;
-    unsigned int i;
-    for (i = 0; i < EDGESIZE; i++) {
-        t.to[i] = UINT_MAX;
-        t.weight[i] = __DBL_MAX__;
+edge_t* init_edge(unsigned int to, double weight) {
+    edge_t* edge = malloc(sizeof * edge);
+    if(edge == NULL) {
+        perror("Error allocating for new edge");
+        exit(EXIT_FAILURE);
     }
-    t.dist = __DBL_MAX__;
-    return t;
+    edge->idTo = to;
+    edge->weight = weight;
+    return edge;
 }
 
-void print_item(Item_Vertex* item) {
-    if (!item) { printf("NULL\n"); return; }
-    printf("[Vertex %u] dist = (%f)\n", id(item), value(item));
-    unsigned int i;
-    for (i = 0; i < item->size; i++) {
-        printf("%u--", id(item));
-        printf("%f", item->weight[i]);
-        printf("->%u\n", to(item)[i]);
-    }
+void print_vertex_callback(edge_t* edge) {
+    printf("\t-(%f)->%u", edge->weight, edge->idTo);
 }
 
-Item_Vertex* init_item(unsigned int id) {
-    Item_Vertex* newItem = malloc(sizeof * newItem);
-    *newItem = make_item(id);
+void print_vertex(vertex_t* vertex) {
+    if (!vertex) { printf("NULL\n"); return; }
+    printf("[Vertex %u] dist = (%f)\n", id(vertex), value(vertex));
+    list_runOnAll(vertex->edgeList, print_vertex_callback);
+}
+
+vertex_t* init_vertex(unsigned int id) {
+    vertex_t* newItem = malloc(sizeof * newItem);
+    newItem->id = id;
+    newItem->size = 0;
+    newItem->edgeList = NULL;
+    newItem->dist = __DBL_MAX__;
     return newItem;
 }
 
@@ -83,23 +83,23 @@ void PQ_print(PQ* pq) {
     unsigned int i;
     for (i = 0; i <= pq->size; i++) {
         printf("[%u] ", i);
-        print_item(pq->vertex[i]);
+        print_vertex(pq->vertex[i]);
     }
 }
 
-void PQ_insert(PQ* pq, Item_Vertex* v) {
+void PQ_insert(PQ* pq, vertex_t* v) {
     pq->size++;
     pq->vertex[pq->size] = v;
     pq->map[id(v)] = pq->size;
     fix_up(pq, pq->size);
 }
 
-Item_Vertex* PQ_min(PQ* pq) {
+vertex_t* PQ_min(PQ* pq) {
     return pq->vertex[1];
 }
 
-Item_Vertex* PQ_delmin(PQ* pq) {
-    Item_Vertex* min = PQ_min(pq);
+vertex_t* PQ_delmin(PQ* pq) {
+    vertex_t* min = PQ_min(pq);
     swap(pq, 1, pq->size);
     pq->size--;
     fix_down(pq, 1);
