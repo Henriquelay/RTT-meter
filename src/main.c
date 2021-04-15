@@ -4,7 +4,7 @@
 #include "../lib/in_out.h"
 #include "../lib/rtt.h"
 
-#define DEBUG_PRINT     (1)
+#define DEBUG_PRINT     (0)
 
 int main(int argc, char** argv) {
     //definição da maioria das variaveis
@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     clock_t tallyRead = clock();
     vertex_t** vertices = readFile(inFileName, &Nserver, &Nclient, &Nmonitor, &Ntotal, &serverIds, &clientIds, &monitorIds);
     tallyRead = clock() - tallyRead;
-    printf("Reading took\t%.6lfs\n", (double) tallyRead / CLOCKS_PER_SEC);
+    if (DEBUG_PRINT) printf("Reading took\t%.6lfs\n", (double) tallyRead / CLOCKS_PER_SEC);
 
     unsigned int Nlines = Nserver * Nclient;
     OutType outTArray[Nlines];
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
         }
     }
     tallyRTT = clock() - tallyRTT;
-    printf("RTT calc took\t%.6lfs\n", (double) tallyRTT / CLOCKS_PER_SEC);
+    if (DEBUG_PRINT) printf("RTT calc took\t%.6lfs\n", (double) tallyRTT / CLOCKS_PER_SEC);
 
     // Aqui é o ponto crítico, onde o programa tem mais memória reservada. Ambos o outTarray precisou ser mantido ao mesmo tempo que o VertexList para os cálculos
 
@@ -58,14 +58,14 @@ int main(int argc, char** argv) {
         free(monitorDists[m]);
     }
     tallyFree = clock() - tallyFree;
-    printf("Freeing took\t%.6lfs\n", (double) tallyFree / CLOCKS_PER_SEC);
+    if (DEBUG_PRINT) printf("Freeing took\t%.6lfs\n", (double) tallyFree / CLOCKS_PER_SEC);
 
     clock_t tallyOut = clock();
     writeFile(outFileName, outTArray, Nlines);
     tallyOut = clock() - tallyOut;
-    printf("Writing took\t%.6lfs\n", (double) tallyOut / CLOCKS_PER_SEC);
+    if (DEBUG_PRINT) printf("Writing took\t%.6lfs\n", (double) tallyOut / CLOCKS_PER_SEC);
 
-    printf("------------\nTotal:\t\t%.6lfs\n", (double) (tallyRead + tallyRTT + tallyFree + tallyOut) / CLOCKS_PER_SEC);
+    if (DEBUG_PRINT) printf("------------\nTotal:\t\t%.6lfs\n", (double) (tallyRead + tallyRTT + tallyFree + tallyOut) / CLOCKS_PER_SEC);
 
     return 0;
 }
