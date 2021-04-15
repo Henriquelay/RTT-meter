@@ -44,7 +44,7 @@ void PQ_print(PQ* pq);
 void PQ_insert(PQ* pq, vertex_t* v);
 vertex_t* PQ_min(PQ* pq);
 vertex_t* PQ_delmin(PQ* pq);
-void PQ_decrease_key(PQ* pq, unsigned int id, unsigned int value);
+void PQ_decrease_key(PQ* pq, unsigned int id, double value);
 char PQ_empty(PQ* pq);
 char PQ_exists(PQ* pq, unsigned int key);
 char PQ_existsAddr(PQ* pq, void* keyAddr);

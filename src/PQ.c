@@ -130,7 +130,7 @@ vertex_t* PQ_delmin(PQ* pq) {
     return min;
 }
 
-void PQ_decrease_key(PQ* pq, unsigned int id, unsigned int value) {
+void PQ_decrease_key(PQ* pq, unsigned int id, double value) {
     unsigned int i = pq->map[id];
     value(pq->vertex[i]) = value;
     // printf("Novo valor %u\n", value(pq->vertex[i]));

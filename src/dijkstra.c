@@ -21,8 +21,8 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
         PQ_insert(dijVertex, startingVertex[i]);
     }
 
-    // puts("\nAfter starting everything, before dijkstra:");
-    // PQ_print(dijEdges);
+    puts("\nAfter starting everything, before dijkstra:");
+    PQ_print(dijVertex);
 
     while (!PQ_empty(dijVertex)) {
         // puts("Current state:");
@@ -30,8 +30,8 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
         vertex_t* vertex = PQ_delmin(dijVertex);
         // puts("After delmin:");
         // PQ_print(dijVertex);
-        // printf("Current:");
-        // print_item(vertex);
+        printf("Current:");
+        print_vertex(vertex);
         // printf("\nDistances:[");
         // for (unsigned int k = 0; k < nVert; k++) {
         //     printf("%u ", value(startingVertex[k]));
@@ -40,19 +40,21 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
         for (linked_node_t* edgeNode = vertex->edgeList->head; edgeNode != NULL; edgeNode = edgeNode->next) {
             edge_t *edge = edgeNode->value;
             double distance = value(vertex) + edge->weight;
-            printf("\n\n\ndistancia porra: %lf",distance);
-            printf("\n value porra: %lf de: %d",value(dijVertex->vertex[dijVertex->map[edge->idTo]]),dijVertex->vertex[dijVertex->map[edge->idTo]]->id);
+            printf("\ndistancia porra: %lf",distance);
+            printf("\n value porra: %lf de: %d\n",value(dijVertex->vertex[dijVertex->map[edge->idTo]]),dijVertex->vertex[dijVertex->map[edge->idTo]]->id);
             // printf("Distance from %u to %u (%u) + (%u) = %u\n", id(vertex), to(vertex)[i], value(vertex), vertex->weight[i], distance);
             if (distance < value(dijVertex->vertex[dijVertex->map[edge->idTo]])) {
-                // puts("Updating distance");
+                puts("Updating distance");
+                printf("From %lf ", value(vertex));
                 PQ_decrease_key(dijVertex, edge->idTo, distance);
+                printf("to %lf\n", value(vertex));
             }
         }
-        // printf("NewDistances:[");
-        // for (unsigned int k = 0; k < nVert; k++) {
-        //     printf("%u ", value(startingVertex[k]));
-        // }
-        // puts("]");
+        printf("NewDistances:[");
+        for (unsigned int k = 0; k < nVert; k++) {
+            printf("%lf ", value(startingVertex[k]));
+        }
+        puts("]");
 
         // puts("");
     }
