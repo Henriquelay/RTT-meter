@@ -6,12 +6,13 @@ void exch(vertex_t** a, vertex_t** b) {
     *b = T;
 }
 
-edge_t* init_edge(unsigned int to, double weight) {
+edge_t* init_edge(unsigned int from, unsigned int to, double weight) {
     edge_t* edge = malloc(sizeof * edge);
     if (edge == NULL) {
         perror("Error allocating for new edge");
         exit(EXIT_FAILURE);
     }
+    edge->idFrom = from;
     edge->idTo = to;
     edge->weight = weight;
     return edge;

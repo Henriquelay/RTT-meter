@@ -8,7 +8,7 @@
 #include "list.h"
 
 typedef struct struct_edge_t {
-    // unsigned int idFrom;
+    unsigned int idFrom;
     unsigned int idTo;                  // identificador do nó
     double weight;                      // valor associado ao nó;
 } edge_t;
@@ -32,7 +32,7 @@ typedef struct struct_PQ {
 #define to(A)           (A->to)                         // retorna id do nó destino
 #define more(A, B)      (value(A) > value(B))           // compara nós, por valor */
 
-edge_t* init_edge(unsigned int to, double weight);
+edge_t* init_edge(unsigned int from, unsigned int to, double weight);
 vertex_t make_item(unsigned int id);
 void print_vertex(vertex_t* item);
 vertex_t* init_vertex(unsigned int id);

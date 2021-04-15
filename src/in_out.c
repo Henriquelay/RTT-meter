@@ -1,7 +1,19 @@
 #include "../lib/in_out.h"
 
+void destroyVertex(vertex_t* vertex) {
+    list_destroy(vertex->edgeList);
+    free(vertex);
+}
+
+void destroyVertexList(vertex_t** Vertices, unsigned int nVertices) {
+    for (unsigned int i = 0; i < nVertices; i++) {
+        destroyVertex(Vertices[i]);
+    }
+    free(Vertices);
+}
+
 unsigned int* readVertexList(FILE* file, vertex_t** V, unsigned int count) {
-    unsigned int *idArray = malloc(sizeof * idArray * count);
+    unsigned int* idArray = malloc(sizeof * idArray * count);
     for (unsigned int i = 0; i < count; i++) {
         unsigned int Vid;
         if (fscanf(file, "%u", &Vid) == -1) {
@@ -13,7 +25,7 @@ unsigned int* readVertexList(FILE* file, vertex_t** V, unsigned int count) {
     return idArray;
 }
 
-void leArestas(FILE* file, vertex_t ** Vertices, unsigned int edgesCount) {
+void leArestas(FILE* file, vertex_t** Vertices, unsigned int edgesCount) {
     for (unsigned int i = 0; i < edgesCount; i++) {
         unsigned int from, to;
         double weight;
@@ -25,14 +37,14 @@ void leArestas(FILE* file, vertex_t ** Vertices, unsigned int edgesCount) {
             Vertices[from]->edgeList = list_init();
         }
         // printf("Pushing -(%.15lf)->%u to %u's edgelist\n", weight, to, from);
-        list_push(Vertices[from]->edgeList, init_edge(to, weight));
+        list_push(Vertices[from]->edgeList, init_edge(from, to, weight));
     }
 }
 
-vertex_t** readFile(char* fileName, unsigned int *sCount, unsigned int *cCount, unsigned int *mCount, unsigned int *total, unsigned int **sArray, unsigned int **cArray, unsigned int **mArray) {
+vertex_t** readFile(char* fileName, unsigned int* sCount, unsigned int* cCount, unsigned int* mCount, unsigned int* total, unsigned int** sArray, unsigned int** cArray, unsigned int** mArray) {
     FILE* file = fopen(fileName, "r");
     if (!file) {
-        perror("Falha ao abrir o arquivo");
+        perror("Falha ao abrir o arquivo de entrada");
         exit(EXIT_FAILURE);
     }
     unsigned int e;
@@ -45,7 +57,7 @@ vertex_t** readFile(char* fileName, unsigned int *sCount, unsigned int *cCount, 
         exit(EXIT_FAILURE);
     };
 
-    vertex_t ** Vertices = malloc(sizeof * Vertices * (*total));
+    vertex_t** Vertices = malloc(sizeof * Vertices * (*total));
     // This will create vertices
 
     for (unsigned int i = 0; i < *total; i++) {
@@ -62,17 +74,18 @@ vertex_t** readFile(char* fileName, unsigned int *sCount, unsigned int *cCount, 
     return Vertices;
 }
 
-OutType* createOutType (unsigned int serverId, unsigned int clientId, double inflRTT) {
-  OutType* new = (OutType*) malloc (sizeof(OutType));
-  new->clientId = clientId;
-  new->serverId = serverId;
-  new->inflRTT = inflRTT;
-  return new;
+OutType createOutType(unsigned int serverId, unsigned int clientId, double inflRTT) {
+    // OutType* new = (OutType*)malloc(sizeof(OutType));
+    OutType new;
+    new.clientId = clientId;
+    new.serverId = serverId;
+    new.inflRTT = inflRTT;
+    return new;
 }
 
 int comparator(const void* p, const void* q) {
-    double x = (*(OutType**)p)->inflRTT;
-    double y = (*(OutType**)q)->inflRTT;
+    double x = ((OutType*)p)->inflRTT;
+    double y = ((OutType*)q)->inflRTT;
     if (x > y)
         return 1;
     if (x < y)
@@ -80,28 +93,16 @@ int comparator(const void* p, const void* q) {
     return 0;
 }
 
-void writeFile(char* outFileName, unsigned int Nserver, unsigned int Nclient, unsigned int Nmonitor, unsigned int Ntotal, unsigned int* serverIds, unsigned int* clientIds, unsigned int* monitorIds, vertex_t** vertices) {
-    unsigned int Nlines = Nserver*Nclient;
-    OutType** outTArray = (OutType**) malloc(Nlines * sizeof(OutType*));
-    for (unsigned int s = 0, outCount = 0; s < Nserver; s++) {
-        for (unsigned int c = 0; c < Nclient; c++, outCount++) {
-            double rttstar = RTTmegaBlasted(vertices, Ntotal, serverIds[s], clientIds[c], monitorIds, Nserver, Nclient, Nmonitor);
-            double rtttrue = RTT(vertices, Ntotal, serverIds[s], clientIds[c]);
-            outTArray[outCount] = createOutType(serverIds[s], clientIds[c], (rttstar/rtttrue));
-            //printf("RTT* from %u to %u = %lf\n", serverIds[s], clientIds[c], rttstar/rtttrue);
-            //printf("RTT* from %u to %u = %lf\n", outTArray[outCount]->serverId, outTArray[outCount]->clientId, outTArray[outCount]->inflRTT);
-        }
+void writeFile(char* fileName, OutType* outTArray, unsigned int Nlines) {
+    FILE* file = fopen(fileName, "w");
+    if (!file) {
+        perror("Falha ao abrir o arquivo de saida");
+        exit(EXIT_FAILURE);
     }
-    FILE* outFile = fopen(outFileName, "w");
-    qsort(outTArray, Nlines, sizeof(OutType*), comparator);
-    for (int i = 0; i < Nlines; i++ ) {
-        OutType* outT = outTArray[i];
-        unsigned int sId = outT->serverId;
-        unsigned int cId = outT->clientId;
-        double iRTT = outT->inflRTT;
-        fprintf(outFile, "%u %u %lf\n", sId, cId, iRTT);
-        free(outT);
+    qsort(outTArray, Nlines, sizeof * outTArray, comparator);
+    for (int i = 0; i < Nlines; i++) {
+        OutType outT = outTArray[i];
+        fprintf(file, "%u %u %.15lf\n", outT.serverId, outT.clientId, outT.inflRTT);
     }
-    fclose(outFile);
-    free(outTArray);
+    fclose(file);
 }

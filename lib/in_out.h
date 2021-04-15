@@ -14,10 +14,10 @@ typedef struct outType
     double inflRTT;
 }OutType;
 
+void destroyVertexList(vertex_t** Vertices, unsigned int nVertices);
+OutType createOutType (unsigned int serverId, unsigned int clientId, double inflRTT);
+
 vertex_t** readFile(char* fileName, unsigned int *sCount, unsigned int *cCount, unsigned int *mCount, unsigned int *total, unsigned int **sArray, unsigned int **cArray, unsigned int **mArray);
-OutType** createOutTypeArray (unsigned int size);
-OutType* createOutType (unsigned int serverId, unsigned int clientId, double inflRTT);
-void writeFile (char* outFileName, unsigned int Nserver, unsigned int Nclient, unsigned int Nmonitor, unsigned int Ntotal, unsigned int* serverIds, unsigned int* clientIds, unsigned int* monitorIds, vertex_t** vertices);
-int comparator(const void* p, const void* q);
+void writeFile(char* fileName, OutType* outTArray, unsigned int Nlines);
 
 #endif // !IN_OUT_H_
