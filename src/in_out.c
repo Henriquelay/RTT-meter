@@ -1,4 +1,4 @@
-#include "../lib/input.h"
+#include "../lib/in_out.h"
 
 unsigned int* readVertexList(FILE* file, vertex_t** V, unsigned int count) {
     unsigned int *idArray = malloc(sizeof * idArray * count);
@@ -62,3 +62,46 @@ vertex_t** readFile(char* fileName, unsigned int *sCount, unsigned int *cCount, 
     return Vertices;
 }
 
+OutType* createOutType (unsigned int serverId, unsigned int clientId, double inflRTT) {
+  OutType* new = (OutType*) malloc (sizeof(OutType));
+  new->clientId = clientId;
+  new->serverId = serverId;
+  new->inflRTT = inflRTT;
+  return new;
+}
+
+int comparator(const void* p, const void* q) {
+    double x = (*(OutType**)p)->inflRTT;
+    double y = (*(OutType**)q)->inflRTT;
+    if (x > y)
+        return 1;
+    if (x < y)
+        return -1;
+    return 0;
+}
+
+void writeFile(char* outFileName, unsigned int Nserver, unsigned int Nclient, unsigned int Nmonitor, unsigned int Ntotal, unsigned int* serverIds, unsigned int* clientIds, unsigned int* monitorIds, vertex_t** vertices) {
+    unsigned int Nlines = Nserver*Nclient;
+    OutType** outTArray = (OutType**) malloc(Nlines * sizeof(OutType*));
+    for (unsigned int s = 0, outCount = 0; s < Nserver; s++) {
+        for (unsigned int c = 0; c < Nclient; c++, outCount++) {
+            double rttstar = RTTmegaBlasted(vertices, Ntotal, serverIds[s], clientIds[c], monitorIds, Nserver, Nclient, Nmonitor);
+            double rtttrue = RTT(vertices, Ntotal, serverIds[s], clientIds[c]);
+            outTArray[outCount] = createOutType(serverIds[s], clientIds[c], (rttstar/rtttrue));
+            //printf("RTT* from %u to %u = %lf\n", serverIds[s], clientIds[c], rttstar/rtttrue);
+            //printf("RTT* from %u to %u = %lf\n", outTArray[outCount]->serverId, outTArray[outCount]->clientId, outTArray[outCount]->inflRTT);
+        }
+    }
+    FILE* outFile = fopen(outFileName, "w");
+    qsort(outTArray, Nlines, sizeof(OutType*), comparator);
+    for (int i = 0; i < Nlines; i++ ) {
+        OutType* outT = outTArray[i];
+        unsigned int sId = outT->serverId;
+        unsigned int cId = outT->clientId;
+        double iRTT = outT->inflRTT;
+        fprintf(outFile, "%u %u %lf\n", sId, cId, iRTT);
+        free(outT);
+    }
+    fclose(outFile);
+    free(outTArray);
+}
