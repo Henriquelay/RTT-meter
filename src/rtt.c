@@ -60,11 +60,11 @@ double RTTstarOverRTT(vertex_t* vertices[], unsigned int nVert, unsigned int ser
     // printf("serverDists=%p\n", (void*)serverDists);
     // printf("*serverDists=%p\n",(void*) *serverDists);
     if (*serverDists == NULL) {
-        printf("Fazendo novo serverDist em s=%u e c=%u\n", server, client);
+        // printf("Fazendo novo serverDist em s=%u e c=%u\n", server, client);
         *serverDists = dijkstra(vertices, nVert, server);
     }
     if (*clientDists == NULL) {
-        printf("Fazendo novo clientDist em s=%u e c=%u\n", server, client);
+        // printf("Fazendo novo clientDist em s=%u e c=%u\n", server, client);
         *clientDists = dijkstra(vertices, nVert, client);
     }
 
@@ -72,7 +72,7 @@ double RTTstarOverRTT(vertex_t* vertices[], unsigned int nVert, unsigned int ser
 
     for (unsigned int m = 0; m < monitorCount; m++) {
         if (monitorDists[m] == NULL) {
-        printf("Fazendo novo monitorDist em s=%u e c=%u m=%u\n", server, client, monitor[m]);
+        // printf("Fazendo novo monitorDist em s=%u e c=%u m=%u\n", server, client, monitor[m]);
             monitorDists[m] = dijkstra(vertices, nVert, monitor[m]);
         }
         double rttStar = (*serverDists)[monitor[m]] + monitorDists[m][server] +

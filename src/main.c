@@ -57,8 +57,8 @@ int main(int argc, char** argv) {
     for (unsigned int m = 0; m < Nmonitor; m++) {
         free(monitorDists[m]);
     }
-    tallyRead = clock() - tallyRead;
-    printf("Freeing took\t%.6lfs\n", (double) tallyRead / CLOCKS_PER_SEC);
+    tallyFree = clock() - tallyFree;
+    printf("Freeing took\t%.6lfs\n", (double) tallyFree / CLOCKS_PER_SEC);
 
     clock_t tallyOut = clock();
     writeFile(outFileName, outTArray, Nlines);
