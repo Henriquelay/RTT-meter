@@ -1,4 +1,4 @@
-#include "../lib/dijkstra.h"
+#include "../lib/rtt.h"
 
 void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int starting) {
     // If starting node has no edges
@@ -6,7 +6,6 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
     if (!startingVertex[starting]) {
         return;
     }
-    startingVertex[starting]->dist = 0;
 
     // printf("Starts at: %u\n", starting);
 
@@ -18,8 +17,10 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
     // Inserting all vertices
     unsigned int i;
     for (i = 0; i < nVert; i++) {
+        value(startingVertex[i]) = INFINITY;
         PQ_insert(dijVertex, startingVertex[i]);
     }
+    PQ_decrease_key(dijVertex, starting, 0);
 
     // puts("\nAfter starting everything, before dijkstra:");
     // PQ_print(dijVertex);
@@ -38,7 +39,7 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
         // }
         // puts("]");
         for (linked_node_t* edgeNode = vertex->edgeList->head; edgeNode != NULL; edgeNode = edgeNode->next) {
-            edge_t *edge = edgeNode->value;
+            edge_t* edge = edgeNode->value;
             double distance = value(vertex) + edge->weight;
             // printf("\ndistancia porra: %lf",distance);
             // printf("\n value porra: %lf de: %d\n",value(dijVertex->vertex[dijVertex->map[edge->idTo]]),dijVertex->vertex[dijVertex->map[edge->idTo]]->id);
@@ -63,4 +64,30 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
     free(dijVertex->vertex);
     free(dijVertex->map);
     free(dijVertex);
+}
+
+
+double RTT(vertex_t* vertices[], unsigned int nVert, unsigned int from, unsigned int to) {
+    dijkstra(vertices, nVert, from);
+    double aTOb = value(vertices[to]);
+    dijkstra(vertices, nVert, to);
+    aTOb += value(vertices[from]);
+    printf("RTT = %lf\n", aTOb);
+    return aTOb;
+}
+
+double RTTblasted(vertex_t* vertices[], unsigned int nVert, unsigned int server, unsigned int client, unsigned int monitor) {
+    double StoM = RTT(vertices, nVert, server, monitor);
+    return StoM + RTT(vertices, nVert, monitor, client);
+}
+
+double RTTmegaBlasted(vertex_t* vertices[], unsigned int nVert, unsigned int server, unsigned int client, unsigned int monitor[], unsigned int serverCount, unsigned int clientCount, unsigned int monitorCount) {
+    double minRTT = INFINITY;
+    for (unsigned int m = 0; m < monitorCount; m++) {
+        double rtt = RTTblasted(vertices, nVert, server, client, monitor[m]);
+        if (rtt < minRTT && rtt != 0) {
+            minRTT = rtt;
+        }
+    }
+    return minRTT;
 }
