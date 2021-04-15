@@ -39,7 +39,9 @@ void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int start
         // puts("]");
         for (linked_node_t* edgeNode = vertex->edgeList->head; edgeNode != NULL; edgeNode = edgeNode->next) {
             edge_t *edge = edgeNode->value;
-            unsigned int distance = value(vertex) + edge->weight;
+            double distance = value(vertex) + edge->weight;
+            printf("\n\n\ndistancia porra: %lf",distance);
+            printf("\n value porra: %lf de: %d",value(dijVertex->vertex[dijVertex->map[edge->idTo]]),dijVertex->vertex[dijVertex->map[edge->idTo]]->id);
             // printf("Distance from %u to %u (%u) + (%u) = %u\n", id(vertex), to(vertex)[i], value(vertex), vertex->weight[i], distance);
             if (distance < value(dijVertex->vertex[dijVertex->map[edge->idTo]])) {
                 // puts("Updating distance");
