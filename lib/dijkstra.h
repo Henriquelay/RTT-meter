@@ -3,6 +3,6 @@
 
 #include "PQ.h"
 
-void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int starting, unsigned int target);
+void dijkstra(vertex_t* startingVertex[], unsigned int nVert, unsigned int starting);
 
 #endif

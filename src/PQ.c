@@ -8,7 +8,7 @@ void exch(vertex_t** a, vertex_t** b) {
 
 edge_t* init_edge(unsigned int to, double weight) {
     edge_t* edge = malloc(sizeof * edge);
-    if(edge == NULL) {
+    if (edge == NULL) {
         perror("Error allocating for new edge");
         exit(EXIT_FAILURE);
     }
@@ -18,7 +18,7 @@ edge_t* init_edge(unsigned int to, double weight) {
 }
 
 void print_vertex_callback(void* edge) {
-    printf("\t-(%f)->%u\n", ((edge_t*) edge)->weight, ((edge_t*) edge)->idTo);
+    printf("\t-(%f)->%u\n", ((edge_t*)edge)->weight, ((edge_t*)edge)->idTo);
 }
 
 void print_vertex(vertex_t* vertex) {
@@ -29,6 +29,26 @@ void print_vertex(vertex_t* vertex) {
     } else {
         list_runOnAll(vertex->edgeList, print_vertex_callback);
     }
+}
+
+void print_all_vertices(vertex_t** vertices, unsigned int Ntotal, unsigned int Nserver, unsigned int Nclient, unsigned int Nmonitor, unsigned int* serverIds, unsigned int* clientIds, unsigned int* monitorIds) {
+    puts("Inserted vertices:");
+    for (unsigned int i = 0; i < Ntotal; i++) {
+        print_vertex(vertices[i]);
+    }
+    printf("Servers:\t[");
+    for (unsigned int i = 0; i < Nserver; i++) {
+        printf("%u ", serverIds[i]);
+    }
+    printf("]\nClients:\t[");
+    for (unsigned int i = 0; i < Nclient; i++) {
+        printf("%u ", clientIds[i]);
+    }
+    printf("]\nMonitors:\t[");
+    for (unsigned int i = 0; i < Nmonitor; i++) {
+        printf("%u ", monitorIds[i]);
+    }
+    printf("]\n");
 }
 
 vertex_t* init_vertex(unsigned int id) {

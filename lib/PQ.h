@@ -49,6 +49,7 @@ char PQ_empty(PQ* pq);
 char PQ_exists(PQ* pq, unsigned int key);
 char PQ_existsAddr(PQ* pq, void* keyAddr);
 unsigned int PQ_size(PQ* pq);
+void print_all_vertices(vertex_t** vertices, unsigned int Ntotal, unsigned int Nserver, unsigned int Nclient, unsigned int Nmonitor, unsigned int* serverIds, unsigned int* clientIds, unsigned int* monitorIds);
 // Frees the Items inside too
 void PQ_finish(PQ* pq);
 
