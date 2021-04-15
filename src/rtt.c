@@ -72,7 +72,7 @@ double RTT(vertex_t* vertices[], unsigned int nVert, unsigned int from, unsigned
     double aTOb = value(vertices[to]);
     dijkstra(vertices, nVert, to);
     aTOb += value(vertices[from]);
-    printf("RTT = %lf\n", aTOb);
+    // printf("RTT = %lf\n", aTOb);
     return aTOb;
 }
 
