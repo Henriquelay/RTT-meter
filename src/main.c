@@ -20,12 +20,22 @@ int main(int argc, char** argv) {
     unsigned int Nlines = Nserver * Nclient;
     OutType outTArray[Nlines];
 
+    double *serverDists[Nserver], *clientDists[Nclient], *monitorDists[Nmonitor];
+
+    for (unsigned int m = 0; m < Nmonitor; m++) {
+        monitorDists[m] = NULL;
+    }
+    for (unsigned int c = 0; c < Nclient; c++) {
+        clientDists[c] = NULL;
+    }
+
     clock_t tallyRTT = clock();
     for (unsigned int s = 0, outCount = 0; s < Nserver; s++) {
+        serverDists[s] = NULL;
         for (unsigned int c = 0; c < Nclient; c++, outCount++) {
-            double rttstar = RTTmegaBlasted(vertices, Ntotal, serverIds[s], clientIds[c], monitorIds, Nserver, Nclient, Nmonitor);
-            double rtttrue = RTT(vertices, Ntotal, serverIds[s], clientIds[c]);
-            outTArray[outCount] = createOutType(serverIds[s], clientIds[c], (rttstar / rtttrue));
+            double RTTfinal = RTTstarOverRTT(vertices, Ntotal, serverIds[s], clientIds[c], monitorIds, Nserver, Nclient, Nmonitor, &(serverDists[s]), &(clientDists[c]), monitorDists);
+            outTArray[outCount] = createOutType(serverIds[s], clientIds[c], RTTfinal);
+            // printf("RTT: %.15lf\n", RTTfinal);
         }
     }
     tallyRTT = clock() - tallyRTT;
@@ -38,6 +48,15 @@ int main(int argc, char** argv) {
     free(serverIds);
     free(clientIds);
     free(monitorIds);
+    for (unsigned int s = 0; s < Nserver; s++) {
+        free(serverDists[s]);
+    }
+    for (unsigned int c = 0; c < Nclient; c++) {
+        free(clientDists[c]);
+    }
+    for (unsigned int m = 0; m < Nmonitor; m++) {
+        free(monitorDists[m]);
+    }
     tallyRead = clock() - tallyRead;
     printf("Freeing took\t%.6lfs\n", (double) tallyRead / CLOCKS_PER_SEC);
 

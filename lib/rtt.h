@@ -3,7 +3,6 @@
 
 #include "PQ.h"
 
-double RTT(vertex_t* vertices[], unsigned int nVert, unsigned int from, unsigned int to);
-double RTTmegaBlasted(vertex_t* vertices[], unsigned int nVert, unsigned int server, unsigned int client, unsigned int monitor[], unsigned int serverCount, unsigned int clientCount, unsigned int monitorCount);
+double RTTstarOverRTT(vertex_t* vertices[], unsigned int nVert, unsigned int server, unsigned int client, unsigned int monitor[], unsigned int serverCount, unsigned int clientCount, unsigned int monitorCount, double** serverDists, double** clientDists, double* monitorDists[monitorCount]);
 
 #endif
