@@ -1,40 +1,22 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include"../lib/entradas.h"
-#include"../lib/arestas.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "../lib/input.h"
+#include "../lib/rtt.h"
 
-int main(int argc, char** argv){
-  //definição da maioria das variaveis
-  char *fileName = argv[1];
-  puts(fileName);
-  FILE *file= fopen(fileName,"r");
-  
-  if (!file){
-    fprintf(stderr, "Falha ao abrir o arquivo '%s'.\n", fileName);
-    return -1;
-  }
-  aresta* arestas;
-  int *S;
-  int *C;
-  int *M;
-  int v,e,s,c,m;
+#define DEBUG_PRINT     (1)
 
-  // // leArquivo(file,S,C,M);
-  fscanf(file,"%d %d",&v,&e);
-  fscanf(file,"%d %d %d",&s,&c,&m);
-  S= malloc(s*sizeof(int));
-  C= malloc(c*sizeof(int));
-  M= malloc(m*sizeof(int));
-  arestas = criaArestasVazias(e);
-  leServidores(file,S,s);
-  leClientes(file,C,c);
-  leMonitores(file,M,m);
-  leArestas(file,arestas,e);
+int main(int argc, char** argv) {
+    //definição da maioria das variaveis
+    char* fileName = argv[1];
+    unsigned int Nserver, Nclient, Nmonitor, Ntotal, * serverIds, * clientIds, * monitorIds;
+    vertex_t** vertices = readFile(fileName, &Nserver, &Nclient, &Nmonitor, &Ntotal, &serverIds, &clientIds, &monitorIds);
+
+    for (unsigned int s = 0; s < Nserver; s++) {
+        for (unsigned int c = 0; c < Nclient; c++) {
+            double rttstar = RTTmegaBlasted(vertices, Ntotal, serverIds[s], clientIds[c], monitorIds, Nserver, Nclient, Nmonitor);
+            double rtttrue = RTT(vertices, Ntotal, serverIds[s], clientIds[c]);
+            printf("RTT* from %u to %u = %lf\n", serverIds[s], clientIds[c], rttstar/rtttrue);
+        }
+    }
 
 }
-
-// void leArquivo(FILE* file,int *S, int *C, int *M){
-//   int v,e,s,c,m;
-//   fscanf(file,"%i %i",v,e);
-//   fscanf(file,"%i %i %i",s,c,m);
-// }
