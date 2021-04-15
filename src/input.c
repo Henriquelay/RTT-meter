@@ -24,7 +24,7 @@ void leArestas(FILE* file, vertex_t ** Vertices, unsigned int edgesCount) {
         if (Vertices[from]->edgeList == NULL) {
             Vertices[from]->edgeList = list_init();
         }
-        printf("Pushing -(%.15lf)->%u to %u's edgelist\n", weight, to, from);
+        // printf("Pushing -(%.15lf)->%u to %u's edgelist\n", weight, to, from);
         list_push(Vertices[from]->edgeList, init_edge(to, weight));
     }
 }

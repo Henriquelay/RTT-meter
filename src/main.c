@@ -10,9 +10,9 @@ int main(int argc, char** argv) {
     char* fileName = argv[1];
     unsigned int Nserver, Nclient, Nmonitor, Ntotal, *serverIds, *clientIds, *monitorIds;
     vertex_t **vertices = readFile(fileName, &Nserver, &Nclient, &Nmonitor, &Ntotal, &serverIds, &clientIds, &monitorIds);
-    if(DEBUG_PRINT) {
-        print_all_vertices(vertices, Ntotal, Nserver, Nclient, Nmonitor, serverIds, clientIds, monitorIds);
-    }
+    // if(DEBUG_PRINT) {
+    //     print_all_vertices(vertices, Ntotal, Nserver, Nclient, Nmonitor, serverIds, clientIds, monitorIds);
+    // }
 
     puts("RODANTE DE DIJKSTRA");
     dijkstra(vertices, Ntotal, 5);
